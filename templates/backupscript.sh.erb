@@ -3,18 +3,31 @@
 # This file is managed by Puppet.  Edit the template, not the file on disk.
 # (C) 2013 Bashton Ltd
 
-DATE=$( date +%Y-%m-%d )
+DATE=$( date +%Y%m%d )
 
-OPTS="--stream=xbstream --user=<%= dbuser %> --password=<%= dbpass %> --parallel=<%= parallel %>"
+if [ $# -eq 2 ]; then
+  if [ -e $1 ]; then
+    mycnf_defaults=$1
+  else
+    echo "USAGE: $0 path/to/defaults.cnf database_name"
+    exit
+  fi
+  dbname=$2
+else
+  echo "USAGE: $0 path/to/defaults.cnf database_name"
+  exit
+fi
+
+OPTS="--stream=xbstream --parallel=<%= @parallel %> --defaults-file=${mycnf_defaults}"
 
 <% if @sshdest -%>
-  SSHCMD="ssh <%= sshdest%>"
+  SSHCMD="ssh <%= @sshdest %>"
   <% if @sshkey -%>
-    SSHCMD="$SSHCMD -i <%= sshkey %>"
+    SSHCMD="$SSHCMD -i <%= @sshkey %>"
   <% end -%>
 <% end -%>
 
-OPTS="$OPTS <%= workdir %>"
+OPTS="$OPTS <%= @workdir %>"
 <% if @slaveinfo -%>
   OPTS="$OPTS --slave-info"
 <% end -%>
@@ -22,9 +35,9 @@ OPTS="$OPTS <%= workdir %>"
   OPTS="$OPTS --safe-slave-backup"
 <% end -%>
 <% if @gzip -%>
-  OUTFILE="<%= outputdir %>/mysql-backup-${DATE}.xbstream.gz"
+  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.xbstream.gz"
 <% else -%>
-  OUTFILE="<%= outputdir %>/mysql-backup-${DATE}.xbstream"
+  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.xbstream"
 <% end -%>
 <% if @sshdest -%>
   /usr/bin/innobackupex $OPTS | 
@@ -38,5 +51,5 @@ OPTS="$OPTS <%= workdir %>"
   <% end -%>
 <% end -%>
 <% if @keepdays -%>
-  $SSHCMD find <%= outputdir %> -maxdepth 1 -name 'mysql-backup-*.xbstream*' -type f -mtime +<%= keepdays %> -delete
+  $SSHCMD find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
 <% end -%>
