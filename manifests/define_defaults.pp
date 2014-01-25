@@ -5,10 +5,10 @@
 # innodb_log_group_home_dir or other things explicitly
 #
 define xtrabackup::define_defaults(
-  $user,
-  $pass,
-  $port,
-  $socket,
+  $user,                     # The user to connect with
+  $pass,                     # The password to use
+  $port,                     # The port to use
+  $socket,                   # The socket, they're not all the same
   $scriptdir,                # The directory to stash the cnf
   $datadir,                  # The main mysql directory
   $innodb_log_group_home_dir # The innodb log file dir
