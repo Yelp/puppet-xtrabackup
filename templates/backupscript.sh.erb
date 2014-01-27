@@ -18,7 +18,7 @@ else
   exit
 fi
 
-OPTS="--defaults-file=${mycnf_defaults} --stream=xbstream --parallel=<%= @parallel %>"
+OPTS="--defaults-extra-file=${mycnf_defaults} --no-version-check --stream=xbstream --parallel=<%= @parallel %>"
 
 <% if @sshdest -%>
   SSHCMD="ssh <%= @sshdest %>"
