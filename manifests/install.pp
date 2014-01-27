@@ -3,7 +3,7 @@
 # Class to install xtrabackup from packages
 #
 class xtrabackup::install {
-  package { 'xtrabackup':
+  package { 'percona-xtrabackup':
     ensure => $xtrabackup::version
   }
 }
