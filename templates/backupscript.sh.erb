@@ -45,7 +45,7 @@ OPTS="$OPTS <%= @workdir %>"
   $SSHCMD "cat - > $OUTFILE"
 <% else -%>
   <% if @gzip -%>
-    /usr/bin/innobackupex $OPTS | gzip -c9 > $OUTFILE
+    /usr/bin/innobackupex $OPTS | gzip -c3 > $OUTFILE
   <% else -%>
     /usr/bin/innobackupex $OPTS > $OUTFILE
   <% end -%>
