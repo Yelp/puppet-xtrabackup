@@ -1,9 +1,9 @@
 # This file is managed by puppet, do not edit
 [xtrabackup]
-innodb_log_group_home_dir   = <%= @innodb_log_group_home_dir %>
-datadir                     = <%= @datadir %>
 user                        = <%= @user %>
 password                    = <%= @pass %>
 port                        = <%= @port %>
 socket                      = <%= @socket %>
+datadir                     = <%= @datadir %>
+innodb_log_group_home_dir   = <%= @innodb_log_group_home_dir %>
 
