@@ -35,9 +35,9 @@ OPTS="$OPTS <%= @workdir %>"
   OPTS="$OPTS --safe-slave-backup"
 <% end -%>
 <% if @gzip -%>
-  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.xbstream.gz"
+  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.${database_name}.xbstream.gz"
 <% else -%>
-  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.xbstream"
+  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.${database_name}.xbstream"
 <% end -%>
 <% if @sshdest -%>
   /usr/bin/innobackupex $OPTS | 
