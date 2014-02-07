@@ -51,5 +51,9 @@ OPTS="$OPTS <%= @workdir %>"
   <% end -%>
 <% end -%>
 <% if @keepdays -%>
-  $SSHCMD find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
+  <% if @sshdest -%>
+    $SSHCMD find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
+  <% else -%>
+    find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
+  <% end -%>
 <% end -%>

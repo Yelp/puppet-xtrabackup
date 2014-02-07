@@ -5,6 +5,7 @@
 # innodb_log_group_home_dir or other things explicitly
 #
 define xtrabackup::define_defaults(
+  $ensure = present,         # Ensure things present/absent
   $user,                     # The user to connect with
   $password,                 # The password to use
   $port,                     # The port to use
@@ -14,6 +15,7 @@ define xtrabackup::define_defaults(
   $innodb_log_group_home_dir # The innodb log file dir
 ) {
   file { "${confdir}/${title}":
+    ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
     mode    => 644,
