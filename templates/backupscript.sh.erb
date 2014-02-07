@@ -49,6 +49,11 @@ OPTS="$OPTS <%= @workdir %>"
   <% else -%>
     /usr/bin/innobackupex $OPTS > $OUTFILE
   <% end -%>
+  if [ $? -eq 0 ]; then
+    touch $OUTFILE.success
+  else
+    touch $OUTFILE.fail
+  fi
 <% end -%>
 <% if @keepdays -%>
   <% if @sshdest -%>
