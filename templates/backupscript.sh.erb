@@ -51,6 +51,7 @@ OPTS="$OPTS <%= @workdir %>"
   <% end -%>
   if [ $? -eq 0 ]; then
     touch $OUTFILE.success
+    touch /tmp/${database_name}.success
   else
     touch $OUTFILE.fail
   fi
