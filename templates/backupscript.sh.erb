@@ -18,7 +18,13 @@ else
   exit
 fi
 
-OPTS="--defaults-extra-file=${mycnf_defaults} --no-version-check --stream=xbstream --parallel=<%= @parallel %>"
+OPTS="--defaults-extra-file=${mycnf_defaults}"
+
+<% if lsbdistid == 'CentOS' -%>
+  OPTS="$OPTS --no-version-check"
+<% end -%>
+
+OPTS="$OPTS --stream=xbstream --parallel=<%= @parallel %>"
 
 <% if @sshdest -%>
   SSHCMD="ssh <%= @sshdest %>"
