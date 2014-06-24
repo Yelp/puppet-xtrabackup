@@ -20,7 +20,7 @@ fi
 mkdir -p $DESTDIR
 
 <% if @gzip -%>
-  gzip -cd $XBSTREAM |
+  pigz -cd $XBSTREAM |
 <% else -%>
   cat $XBSTREAM |
 <% end -%>
