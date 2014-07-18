@@ -67,7 +67,8 @@ class xtrabackup (
   $parallel  = 1,                 # Threads to use
   $slaveinfo = undef,             # Record master log pos if true
   $safeslave = undef,             # Disconnect clients from slave
-  $scriptdir  = '/usr/local/bin/' # The default script dir
+  $scriptdir = '/usr/local/bin/', # The default script dir
+  $version   = 'present'
 ) {
   class{'xtrabackup::install': } ->
   class{'xtrabackup::config': } ->
