@@ -20,7 +20,7 @@ fi
 
 OPTS="--defaults-extra-file=${mycnf_defaults}"
 
-<% if lsbdistid == 'CentOS' -%>
+<% if scope.lookupvar('::lsbdistid') == 'CentOS' -%>
   OPTS="$OPTS --no-version-check"
 <% end -%>
 
