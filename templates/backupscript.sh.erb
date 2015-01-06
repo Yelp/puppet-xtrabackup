@@ -3,6 +3,8 @@
 # This file is managed by Puppet.  Edit the template, not the file on disk.
 # (C) 2013 Bashton Ltd
 
+set -o pipefail
+
 DATE=$( date +%Y%m%d )
 
 if [ $# -eq 2 ]; then
