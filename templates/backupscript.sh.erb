@@ -3,18 +3,39 @@
 # This file is managed by Puppet.  Edit the template, not the file on disk.
 # (C) 2013 Bashton Ltd
 
-DATE=$( date +%Y-%m-%d )
+set -o pipefail
 
-OPTS="--stream=xbstream --user=<%= dbuser %> --password=<%= dbpass %> --parallel=<%= parallel %>"
+DATE=$( date +%Y%m%d )
+
+if [ $# -eq 2 ]; then
+  if [ -e $1 ]; then
+    mycnf_defaults=$1
+  else
+    echo "USAGE: $0 path/to/defaults.cnf database_name"
+    exit
+  fi
+  database_name=$2
+else
+  echo "USAGE: $0 path/to/defaults.cnf database_name"
+  exit
+fi
+
+OPTS="--defaults-extra-file=${mycnf_defaults}"
+
+<% if scope.lookupvar('::lsbdistid') == 'CentOS' -%>
+  OPTS="$OPTS --no-version-check"
+<% end -%>
+
+OPTS="$OPTS --stream=xbstream --parallel=<%= @parallel %>"
 
 <% if @sshdest -%>
-  SSHCMD="ssh <%= sshdest%>"
+  SSHCMD="ssh <%= @sshdest %>"
   <% if @sshkey -%>
-    SSHCMD="$SSHCMD -i <%= sshkey %>"
+    SSHCMD="$SSHCMD -i <%= @sshkey %>"
   <% end -%>
 <% end -%>
 
-OPTS="$OPTS <%= workdir %>"
+OPTS="$OPTS <%= @workdir %>"
 <% if @slaveinfo -%>
   OPTS="$OPTS --slave-info"
 <% end -%>
@@ -22,21 +43,31 @@ OPTS="$OPTS <%= workdir %>"
   OPTS="$OPTS --safe-slave-backup"
 <% end -%>
 <% if @gzip -%>
-  OUTFILE="<%= outputdir %>/mysql-backup-${DATE}.xbstream.gz"
+  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.${database_name}.xbstream.gz"
 <% else -%>
-  OUTFILE="<%= outputdir %>/mysql-backup-${DATE}.xbstream"
+  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.${database_name}.xbstream"
 <% end -%>
 <% if @sshdest -%>
   /usr/bin/innobackupex $OPTS | 
-  <% if @gzip -%> gzip -c9 |<% end -%>
+  <% if @gzip -%> nice pigz -p 10 |<% end -%>
   $SSHCMD "cat - > $OUTFILE"
 <% else -%>
   <% if @gzip -%>
-    /usr/bin/innobackupex $OPTS | gzip -c9 > $OUTFILE
+    /usr/bin/innobackupex $OPTS | nice pigz -p 10 > $OUTFILE
   <% else -%>
     /usr/bin/innobackupex $OPTS > $OUTFILE
   <% end -%>
+  if [ $? -eq 0 ]; then
+    touch $OUTFILE.success
+    touch /tmp/${database_name}.success
+  else
+    touch $OUTFILE.fail
+  fi
 <% end -%>
 <% if @keepdays -%>
-  $SSHCMD find <%= outputdir %> -maxdepth 1 -name 'mysql-backup-*.xbstream*' -type f -mtime +<%= keepdays %> -delete
+  <% if @sshdest -%>
+    $SSHCMD find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
+  <% else -%>
+    find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
+  <% end -%>
 <% end -%>
