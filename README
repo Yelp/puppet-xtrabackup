@@ -23,7 +23,6 @@ do this for you.
       dbpass    => "rootdbpass",
       hour      => 3,
       minute    => 0,
-      keepdays  => 14,
       workdir   => "/root/backupworkdir",
       outputdir => "/mnt/nfs/mysqlbackups",
     }
