@@ -19,10 +19,6 @@ fi
 
 mkdir -p $DESTDIR
 
-<% if @gzip -%>
-  pigz -cd $XBSTREAM |
-<% else -%>
-  cat $XBSTREAM |
-<% end -%>
+pigz -cd $XBSTREAM |
 xbstream -x -C $DESTDIR
 innobackupex --apply-log $DESTDIR
