@@ -4,8 +4,8 @@ set -o nounset
 set -o pipefail
 
 prune_xtrabackups() {
-  # Wait 24 hours after taking a successful backup before pruning
-  local wait_to_prune=24
+  # Wait 72 hours after taking a successful backup before pruning
+  local wait_to_prune=72
 
   local cluster
   local backup_root
