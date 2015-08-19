@@ -20,6 +20,9 @@
 #   (Optional, disabled by default)
 # [*scriptdir*]
 #   Specify the actual directory to put the script on the filesystem
+# [*p_threads*]
+#   Speed up pigz by using additional threads
+#   (Optional, defaults to 10)
 #
 # === Examples
 #
@@ -33,6 +36,7 @@
 # === Authors
 #
 # Sam Bashton <sam@bashton.com>
+# Matt Ullmer <meu@yelp.com>
 #
 # === Copyright
 #
@@ -44,6 +48,7 @@ class xtrabackup (
   $parallel  = 1,                 # Threads to use
   $slaveinfo = undef,             # Record master log pos if true
   $scriptdir = '/usr/local/bin/', # The default script dir
+  $p_threads = 10,                # Pigz threads to use
   $version   = 'present'
 ) {
   class{'xtrabackup::install': } ->

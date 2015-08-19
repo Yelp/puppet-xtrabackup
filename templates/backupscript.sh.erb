@@ -33,5 +33,5 @@ OPTS="$OPTS <%= @workdir %>"
   OPTS="$OPTS --slave-info"
 <% end -%>
 OUTFILE="<%= @outputdir %>/${database_name}/xtrabackup/${DATE}.${database_name}.xbstream.gz"
-/usr/bin/innobackupex $OPTS | nice pigz -p 10 > $OUTFILE
+/usr/bin/innobackupex $OPTS | nice pigz -p <%= @p_threads -%> > $OUTFILE
 touch $OUTFILE.success
