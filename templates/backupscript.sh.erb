@@ -26,12 +26,12 @@ OPTS="--defaults-extra-file=${mycnf_defaults}"
   OPTS="$OPTS --no-version-check"
 <% end -%>
 
-OPTS="$OPTS --stream=xbstream --parallel=<%= @parallel %>"
+OPTS="$OPTS --stream=xbstream --parallel=<%= scope.lookupvar('::xtrabackup::parallel') %>"
 
-OPTS="$OPTS <%= @workdir %>"
-<% if @slaveinfo -%>
+OPTS="$OPTS <%= scope.lookupvar('::xtrabackup::workdir') %>"
+<% if scope.lookupvar('::xtrabackup::slaveinfo') -%>
   OPTS="$OPTS --slave-info"
 <% end -%>
-OUTFILE="<%= @outputdir %>/${database_name}/xtrabackup/${DATE}.${database_name}.xbstream.gz"
-/usr/bin/innobackupex $OPTS | nice pigz -p <%= @p_threads -%> > $OUTFILE
+OUTFILE="<%= scope.lookupvar('::xtrabackup::outputdir') %>/${database_name}/xtrabackup/${DATE}.${database_name}.xbstream.gz"
+/usr/bin/innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
 touch $OUTFILE.success
