@@ -19,7 +19,7 @@ define xtrabackup::define_defaults(
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
-    mode    => '0644',
+    mode    => '0600',
     content => template('xtrabackup/defaults.cnf.erb')
   }
 }
