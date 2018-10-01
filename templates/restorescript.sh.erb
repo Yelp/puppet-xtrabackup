@@ -22,4 +22,5 @@ mkdir -p $DESTDIR/data $DESTDIR/master_log $DESTDIR/relay_log $DESTDIR/log $DEST
 pigz -cd $XBSTREAM |
 xbstream -x -C $DESTDIR/data
 innobackupex --apply-log $DESTDIR/data
+touch $DESTDIR/log/err.log
 chown -R mysql:mysql $DESTDIR
