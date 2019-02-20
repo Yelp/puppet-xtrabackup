@@ -13,13 +13,16 @@ define xtrabackup::define_defaults(
   $confdir                     = '',      # The directory to stash the cnf
   $datadir                     = '',      # The main mysql directory
   $innodb_log_group_home_dir   = '',      # The innodb log file dir
-  $xtrabackup_open_files_limit = ''       # The innobackupex hidden setting
+  $xtrabackup_open_files_limit = '',      # The innobackupex hidden setting
+  $file_params                 = {},      # Override config's file params
 ) {
-  file { "${confdir}/${title}":
+  $default_params = {
     ensure  => $ensure,
     owner   => 'root',
     group   => 'root',
     mode    => '0600',
     content => template('xtrabackup/defaults.cnf.erb')
   }
+  $merged_params = merge($default_params, $file_params)
+  create_resources('file', {"${confdir}/${title}" => $merged_params})
 }
