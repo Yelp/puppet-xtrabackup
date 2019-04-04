@@ -16,9 +16,9 @@ class xtrabackup::config {
     content => template('xtrabackup/restorescript.sh.erb')
   }
   file { "$xtrabackup::scriptdir/mysql-xtrabackup-async-prune":
-    owner   => 'root',
-    group   => 'root',
-    mode    => '744',
-    content => template('puppet:///modules/xtrabackup/asyncprune.sh')
+    owner  => 'root',
+    group  => 'root',
+    mode   => '744',
+    source => 'puppet:///modules/xtrabackup/asyncprune.sh'
   }
 }

@@ -26,48 +26,12 @@ OPTS="--defaults-extra-file=${mycnf_defaults}"
   OPTS="$OPTS --no-version-check"
 <% end -%>
 
-OPTS="$OPTS --stream=xbstream --parallel=<%= @parallel %>"
+OPTS="$OPTS --stream=xbstream --parallel=<%= scope.lookupvar('::xtrabackup::parallel') %>"
 
-<% if @sshdest -%>
-  SSHCMD="ssh <%= @sshdest %>"
-  <% if @sshkey -%>
-    SSHCMD="$SSHCMD -i <%= @sshkey %>"
-  <% end -%>
-<% end -%>
-
-OPTS="$OPTS <%= @workdir %>"
-<% if @slaveinfo -%>
+OPTS="$OPTS <%= scope.lookupvar('::xtrabackup::workdir') %>"
+<% if scope.lookupvar('::xtrabackup::slaveinfo') -%>
   OPTS="$OPTS --slave-info"
 <% end -%>
-<% if @safeslave -%>
-  OPTS="$OPTS --safe-slave-backup"
-<% end -%>
-<% if @gzip -%>
-  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.${database_name}.xbstream.gz"
-<% else -%>
-  OUTFILE="<%= @outputdir %>/${database_name}/${DATE}.${database_name}.xbstream"
-<% end -%>
-<% if @sshdest -%>
-  /usr/bin/innobackupex $OPTS | 
-  <% if @gzip -%> nice pigz -p 10 |<% end -%>
-  $SSHCMD "cat - > $OUTFILE"
-<% else -%>
-  <% if @gzip -%>
-    /usr/bin/innobackupex $OPTS | nice pigz -p 10 > $OUTFILE
-  <% else -%>
-    /usr/bin/innobackupex $OPTS > $OUTFILE
-  <% end -%>
-  if [ $? -eq 0 ]; then
-    touch $OUTFILE.success
-    touch /tmp/${database_name}.success
-  else
-    touch $OUTFILE.fail
-  fi
-<% end -%>
-<% if @keepdays -%>
-  <% if @sshdest -%>
-    $SSHCMD find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
-  <% else -%>
-    find "<%= @outputdir %>/${database_name}" -maxdepth 1 -name '*.xbstream*' -type f -mtime +<%= @keepdays %> -delete
-  <% end -%>
-<% end -%>
+OUTFILE="<%= scope.lookupvar('::xtrabackup::outputdir') %>/${database_name}/xtrabackup/${DATE}.${database_name}.xbstream.gz"
+/usr/bin/innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
+touch $OUTFILE.success

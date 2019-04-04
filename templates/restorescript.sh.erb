@@ -17,12 +17,10 @@ if [ -d $DESTDIR ]; then
   exit 1
 fi
 
-mkdir -p $DESTDIR
+mkdir -p $DESTDIR/data $DESTDIR/master_log $DESTDIR/relay_log $DESTDIR/log $DESTDIR/tmp
 
-<% if @gzip -%>
-  pigz -cd $XBSTREAM |
-<% else -%>
-  cat $XBSTREAM |
-<% end -%>
-xbstream -x -C $DESTDIR
-innobackupex --apply-log $DESTDIR
+pigz -cd $XBSTREAM |
+xbstream -x -C $DESTDIR/data
+innobackupex --apply-log $DESTDIR/data
+touch $DESTDIR/log/err.log
+chown -R mysql:mysql $DESTDIR
