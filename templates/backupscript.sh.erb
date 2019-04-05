@@ -37,7 +37,7 @@ OUTFILE="<%= scope.lookupvar('::xtrabackup::outputdir') %>/${database_name}/xtra
 
 <% if scope.lookupvar('::xtrabackup::compat') == 'maria' -%>
 /usr/bin/mariabackup --innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
-<% else %>
+<% else -%>
 /usr/bin/innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
 <% end -%>
 touch $OUTFILE.success

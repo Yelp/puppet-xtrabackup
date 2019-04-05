@@ -27,7 +27,7 @@ pigz -p "${PARALLEL}" -cd "${XBSTREAM}" |
 xbstream -x -C "${DESTDIR}/data"
 <% if scope.lookupvar('::xtrabackup::compat') == 'maria' -%>
 /usr/bin/mariabackup --innobackupex --apply-log "${DESTDIR}/data"
-<% else %>
+<% else -%>
 /usr/bin/innobackupex --apply-log "${DESTDIR}/data"
 <% end -%>
 touch "${DESTDIR}/log/err.log"
