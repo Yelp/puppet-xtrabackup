@@ -49,7 +49,8 @@ class xtrabackup (
   $slaveinfo = undef,             # Record master log pos if true
   $scriptdir = '/usr/local/bin/', # The default script dir
   $p_threads = 10,                # Pigz threads to use
-  $version   = 'present'
+  $version   = 'present',
+  $compat    = undef              # Set to 'maria' to work with mariabackup
 ) {
   class{'xtrabackup::install': } ->
   class{'xtrabackup::config': } ->

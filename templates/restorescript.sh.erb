@@ -2,25 +2,33 @@
 
 XBSTREAM=$1
 DESTDIR=$2
+CPUCORE_COUNT=$(nproc --all)
+# Assume we want to restore ASAP so use all the cores.
+# Set env var if you feel differently
+PARALLEL="${PARALLEL:-$CPUCORE_COUNT}"
 
-if [ x${XBSTREAM} == "x" ] || [ x${DESTDIR} == "x" ]; then
+if [ "x${XBSTREAM}" == "x" ] || [ "x${DESTDIR}" == "x" ]; then
   echo "Usage: $0 <xbstream backup> <destination directory>"
   exit 1
 fi
 
-if [ ! -f $XBSTREAM ]; then
+if [ ! -f "${XBSTREAM}" ]; then
   echo "Can't find backup $XBSTREAM"
   exit 1
 fi
-if [ -d $DESTDIR ]; then
+if [ -d "${DESTDIR}" ]; then
   echo "Destination $DESTDIR already exists; will not overwrite"
   exit 1
 fi
 
-mkdir -p $DESTDIR/data $DESTDIR/master_log $DESTDIR/relay_log $DESTDIR/log $DESTDIR/tmp
+mkdir -p "${DESTDIR}/data" "${DESTDIR}/master_log" "${DESTDIR}/relay_log" "${DESTDIR}/log" "${DESTDIR}/tmp"
 
-pigz -cd $XBSTREAM |
-xbstream -x -C $DESTDIR/data
-innobackupex --apply-log $DESTDIR/data
-touch $DESTDIR/log/err.log
-chown -R mysql:mysql $DESTDIR
+pigz -p "${PARALLEL}" -cd "${XBSTREAM}" |
+xbstream -x -C "${DESTDIR}/data"
+<% if scope.lookupvar('::xtrabackup::compat') == 'maria' -%>
+/usr/bin/mariabackup --innobackupex --apply-log "${DESTDIR}/data"
+<% else %>
+/usr/bin/innobackupex --apply-log "${DESTDIR}/data"
+<% end -%>
+touch "${DESTDIR}/log/err.log"
+chown -R mysql:mysql "${DESTDIR}"

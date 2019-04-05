@@ -32,6 +32,12 @@ OPTS="$OPTS <%= scope.lookupvar('::xtrabackup::workdir') %>"
 <% if scope.lookupvar('::xtrabackup::slaveinfo') -%>
   OPTS="$OPTS --slave-info"
 <% end -%>
+
 OUTFILE="<%= scope.lookupvar('::xtrabackup::outputdir') %>/${database_name}/xtrabackup/${DATE}.${database_name}.xbstream.gz"
+
+<% if scope.lookupvar('::xtrabackup::compat') == 'maria' -%>
+/usr/bin/mariabackup --innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
+<% else %>
 /usr/bin/innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
+<% end -%>
 touch $OUTFILE.success
