@@ -25,7 +25,7 @@ mkdir -p "${DESTDIR}/data" "${DESTDIR}/master_log" "${DESTDIR}/relay_log" "${DES
 
 pigz -p "${PARALLEL}" -cd "${XBSTREAM}" |
 xbstream -x -C "${DESTDIR}/data"
-<% if scope.lookupvar('::xtrabackup::compat') == 'maria' -%>
+<% if scope.lookupvar('::xtrabackup::compatibility_version') == 'mariadb' -%>
 /usr/bin/mariabackup --innobackupex --apply-log "${DESTDIR}/data"
 <% else -%>
 /usr/bin/innobackupex --apply-log "${DESTDIR}/data"

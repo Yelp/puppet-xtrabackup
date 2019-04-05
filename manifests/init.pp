@@ -50,7 +50,7 @@ class xtrabackup (
   $scriptdir = '/usr/local/bin/', # The default script dir
   $p_threads = 10,                # Pigz threads to use
   $version   = 'present',
-  $compat    = undef              # Set to 'maria' to work with mariabackup
+  $compatibility_version = undef  # Set to 'mariadb' to work with mariabackup
 ) {
   class{'xtrabackup::install': } ->
   class{'xtrabackup::config': } ->
