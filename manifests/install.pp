@@ -7,6 +7,10 @@ class xtrabackup::install {
     package {'percona-xtrabackup-80':
       ensure => $xtrabackup::version
     }
+  } elsif $::lsbdistcodename != 'lucid' {
+    package { 'percona-xtrabackup-24':
+      ensure => $xtrabackup::version
+    }
   } else {
     package { 'percona-xtrabackup':
       ensure => $xtrabackup::version
