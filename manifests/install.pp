@@ -8,7 +8,7 @@ class xtrabackup::install {
       ensure => $xtrabackup::version
     }
   } else {
-    package { 'percona-xtrabackup':
+    package { 'percona-xtrabackup-24':
       ensure => $xtrabackup::version
     }
   }
