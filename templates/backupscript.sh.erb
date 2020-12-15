@@ -26,7 +26,11 @@ OPTS="--defaults-extra-file=${mycnf_defaults}"
   OPTS="$OPTS --no-version-check"
 <% end -%>
 
+<% if scope.lookupvar('::xtrabackup::compatibility_version') == 'mysql80' -%>
+OPTS="$OPTS --backup --stream=xbstream --parallel=<%= scope.lookupvar('::xtrabackup::parallel') %>"
+<% else -%>
 OPTS="$OPTS --stream=xbstream --parallel=<%= scope.lookupvar('::xtrabackup::parallel') %>"
+<% end -%>
 
 OPTS="$OPTS <%= scope.lookupvar('::xtrabackup::workdir') %>"
 <% if scope.lookupvar('::xtrabackup::slaveinfo') -%>
@@ -37,6 +41,8 @@ OUTFILE="<%= scope.lookupvar('::xtrabackup::outputdir') %>/${database_name}/xtra
 
 <% if scope.lookupvar('::xtrabackup::compatibility_version') == 'mariadb' -%>
 /usr/bin/mariabackup --innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
+<% elsif scope.lookupvar('::xtrabackup::compatibility_version') == 'mysql80' -%>
+/usr/bin/xtrabackup $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
 <% else -%>
 /usr/bin/innobackupex $OPTS | nice pigz -p <%= scope.lookupvar('::xtrabackup::p_threads') -%> > $OUTFILE
 <% end -%>
