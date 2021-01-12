@@ -28,7 +28,7 @@ xbstream -x -C "${DESTDIR}/data"
 <% if scope.lookupvar('::xtrabackup::compatibility_version') == 'mariadb' -%>
 /usr/bin/mariabackup --innobackupex --apply-log "${DESTDIR}/data"
 <% elsif scope.lookupvar('::xtrabackup::compatibility_version') == 'mysql80' -%>
-/usr/bin/xtrabackup --apply-log-only "${DESTDIR}/data"
+/usr/bin/xtrabackup --apply-log-only --target-dir  "${DESTDIR}/data"
 <% else -%>
 /usr/bin/innobackupex --apply-log "${DESTDIR}/data"
 <% end -%>
